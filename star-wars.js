@@ -1,12 +1,19 @@
 const base_url = 'https://swapi.co/api/people/',
-      ul       = document.querySelector('#people');
+      ul       = document.querySelector('#characters');
+let   count    = 0;
 
 function add_to_list(character) {
-    return character.name;
+    if (character) {
+        return character.name;    
+    }
+    return;
 }
 
 function handler(response) {
-    return response.json();
+    if (response.ok) {
+        return response.json();    
+    }
+    return;
 }
 
 function createElement(element) {
@@ -14,7 +21,11 @@ function createElement(element) {
 }
 
 function appendTo(parent, child) {
-  return parent.appendChild(child);
+    return parent.appendChild(child);
+}
+
+function loadMore() {
+    console.log(this);
 }
 
 function getCharacters(n, offset) {
@@ -24,17 +35,21 @@ function getCharacters(n, offset) {
     for (let i=1; i<=n; i++) {
         const url = base_url+(i+offset);
         names.push(fetch(url).then(handler).then(add_to_list));
+        count++;
     }
     return Promise.all(names).then(function(data) {
         data.map(function(name) {
-            let li = createElement('li');
+            if (name) {
+                let li = createElement('li');
 
-            li.innerHTML = name;
-            appendTo(ul, li);
+                li.innerHTML = name;
+                appendTo(ul, li);
+            }
         })
+        let current = ul.getElementsByTagName('li').length;
+        ul.addEventListener("click", loadMore, false);
+        return current;
     });
 }
-
-console.log(ul);
 
 getCharacters(10,0);

@@ -1,0 +1,9 @@
+.list {
+	width: 50%;
+	float: left;
+}
+
+.selected {
+	width: 50%;
+	float: right;
+}
